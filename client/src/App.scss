@@ -1,0 +1,75 @@
+@import './utility-styles/utility-classes';
+@import './utility-styles/variables';
+
+// #root > div {
+//   width: 100%;
+//   @media screen and (min-width: 769px) {
+//     display: flex;
+//   }
+// }
+
+.input {
+  display: flex;
+  flex-direction: column;
+}
+label {
+  margin-bottom: 4px;
+}
+.form-group {
+  margin-bottom: 16px;
+}
+
+.popup-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(25, 15, 57, 0.25);
+  box-shadow: 0 36px 26px -16px rgba(0, 0, 0, 0.22);
+  z-index: 7;
+
+  .modal-header {
+    .header-title {
+      font-size: 18px;
+    }
+  }
+  .modal-body {
+    font-size: 16px;
+  }
+
+  .content {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    right: 0;
+    padding: 64px 48px;
+    max-width: 630px;
+    transform: translateY(-50%);
+    transition: transform 0.5s;
+    z-index: 13;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: auto;
+    background-color: white;
+  }
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.error-div {
+  color: #d43900;
+  font-size: 12px;
+  br {
+    margin-bottom: 0;
+  }
+  .pass-reqs {
+    color: #473f61;
+  }
+}
+
+

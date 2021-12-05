@@ -1,5 +1,6 @@
 import {BrowserRouter, Switch, Route, Link} from "react-router-dom";
 import {Home, LoginPage, SignupPage, FormulaCalculator} from "./views";
+import './App.scss';
 
 function App() {
   return (

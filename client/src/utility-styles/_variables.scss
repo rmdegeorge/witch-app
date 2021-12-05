@@ -1,0 +1,255 @@
+// Breakpoint viewport sizes and media queries.
+//
+// Breakpoints are defined as a map of (name: minimum width), order from small to large:
+//
+//    (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px)
+//
+// The map defined in the `$grid-breakpoints` global variable is used as the `$breakpoints` argument by default.
+
+// Name of the next breakpoint, or null for the last breakpoint.
+//
+//    >> breakpoint-next(sm)
+//    md
+//    >> breakpoint-next(sm, (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px))
+//    md
+//    >> breakpoint-next(sm, $breakpoint-names: (xs sm md lg xl))
+//    md
+@function breakpoint-next($name, $breakpoints: $grid-breakpoints, $breakpoint-names: map-keys($breakpoints)) {
+  $n: index($breakpoint-names, $name);
+  @return if($n < length($breakpoint-names), nth($breakpoint-names, $n + 1), null);
+}
+
+// Minimum breakpoint width. Null for the smallest (first) breakpoint.
+//
+//    >> breakpoint-min(sm, (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px))
+//    576px
+@function breakpoint-min($name, $breakpoints: $grid-breakpoints) {
+  $min: map-get($breakpoints, $name);
+  @return if($min != 0, $min, null);
+}
+
+// Maximum breakpoint width. Null for the largest (last) breakpoint.
+// The maximum value is calculated as the minimum of the next one less 0.1.
+//
+//    >> breakpoint-max(sm, (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px))
+//    767px
+@function breakpoint-max($name, $breakpoints: $grid-breakpoints) {
+  $next: breakpoint-next($name, $breakpoints);
+  @return if($next, breakpoint-min($next, $breakpoints) - 1px, null);
+}
+
+// Returns a blank string if smallest breakpoint, otherwise returns the name with a dash infront.
+// Useful for making responsive utilities.
+//
+//    >> breakpoint-infix(xs, (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px))
+//    ""  (Returns a blank string)
+//    >> breakpoint-infix(sm, (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px))
+//    "-sm"
+@function breakpoint-infix($name, $breakpoints: $grid-breakpoints) {
+  @return if(breakpoint-min($name, $breakpoints) == null, "", "-#{$name}");
+}
+
+// Media of at least the minimum breakpoint width. No query for the smallest breakpoint.
+// Makes the @content apply to the given breakpoint and wider.
+@mixin media-breakpoint-up($name, $breakpoints: $grid-breakpoints) {
+  $min: breakpoint-min($name, $breakpoints);
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+// Media of at most the maximum breakpoint width. No query for the largest breakpoint.
+// Makes the @content apply to the given breakpoint and narrower.
+@mixin media-breakpoint-down($name, $breakpoints: $grid-breakpoints) {
+  $max: breakpoint-max($name, $breakpoints);
+  @if $max {
+    @media (max-width: $max) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+// Media that spans multiple breakpoint widths.
+// Makes the @content apply between the min and max breakpoints
+@mixin media-breakpoint-between($lower, $upper, $breakpoints: $grid-breakpoints) {
+  $min: breakpoint-min($lower, $breakpoints);
+  $max: breakpoint-max($upper, $breakpoints);
+
+  @if $min != null and $max != null {
+    @media (min-width: $min) and (max-width: $max) {
+      @content;
+    }
+  } @else if $max == null {
+    @include media-breakpoint-up($lower) {
+      @content;
+    }
+  } @else if $min == null {
+    @include media-breakpoint-down($upper) {
+      @content;
+    }
+  }
+}
+
+// Media between the breakpoint's minimum and maximum widths.
+// No minimum for the smallest breakpoint, and no maximum for the largest one.
+// Makes the @content apply only to the given breakpoint, not viewports any wider or narrower.
+@mixin media-breakpoint-only($name, $breakpoints: $grid-breakpoints) {
+  $min: breakpoint-min($name, $breakpoints);
+  $max: breakpoint-max($name, $breakpoints);
+
+  @if $min != null and $max != null {
+    @media (min-width: $min) and (max-width: $max) {
+      @content;
+    }
+  } @else if $max == null {
+    @include media-breakpoint-up($name) {
+      @content;
+    }
+  } @else if $min == null {
+    @include media-breakpoint-down($name) {
+      @content;
+    }
+  }
+}
+
+// Font Imports
+// @font-face {
+//   font-family: 'Graphik';
+//   src: url('../assets/fonts/GraphikLight.woff2') format('woff2');
+// }
+// @font-face {
+//   font-family: 'Graphik';
+//   font-weight: 500;
+//   src: url('../assets/fonts/GraphikMedium.woff2') format('woff2');
+// }
+// @font-face {
+//   font-family: 'Graphik Medium';
+//   src: url('../assets/fonts/GraphikMedium.otf') format('otf');
+// }
+// @font-face {
+//   font-family: 'WallopPRPL';
+//   src: url('../assets/fonts/WallopPRPL-Bold.woff2') format('woff2');
+// }
+// @font-face {
+//   font-family: 'Plantin';
+//   src: url('../assets/fonts/PlantinMTProLight.woff2') format('woff2');
+// }
+// @font-face {
+//   font-family: 'Plantin';
+//   font-weight: 500;
+//   src: url('/assets/fonts/PlantinMTProBold.woff2') format('woff2');
+// }
+
+// Primary Colors
+$color-purple-primary: #432b8d;
+$color-purple-medium: #745fcc;
+$color-white: #ffffff;
+$color-midnight: #190F39;
+$color-light-midnight: #473f61;
+
+// Secondary Colors
+$color-neutral-purple: #f6f4fC;
+$color-aqua-dark: #007faa;
+$color-aqua-light: #f6fbfb;
+$color-aqua-medium: #00739a;
+$color-coral-orange: #f0746c;
+
+// Tertiary Colors
+$color-light-gray: #f5f5f5;
+$color-utility-gray: #d1cfd7;
+$color-utility-green: #008746;
+$color-utility-red: #d43900;
+
+// Background Colors
+$color-light-purple: #c9bfef;
+$color-light-purple-2: #dbd5f5;
+$color-light-purple-3: #e4dff7;
+$color-light-purple-4: #f6f4fc;
+$color-light-orange: #fdf0e4;
+$color-light-aqua: #eef7f8;
+$color-light-pink: #ffe9ed;
+$color-light-green: #e7f1f0;
+$color-light-periwinkle: #f0f2fc;
+$color-neutral-green: #e6f3ed;
+
+// Gradients
+$gradient-light-purple: linear-gradient(to bottom, $color-light-purple-3, $color-white);
+$gradient-purple-to-light: linear-gradient(113.56deg, $color-purple-primary 13.26%, $color-purple-medium 103.09%);
+$gradient-light-pink: linear-gradient(to bottom, $color-light-pink, $color-white);
+$gradient-light-orange: linear-gradient(to bottom, $color-light-orange, $color-white);
+$gradient-light-aqua: linear-gradient(to bottom, $color-light-aqua, $color-white);
+$gradient-light-green: linear-gradient(to bottom, $color-light-green, $color-white);
+$gradient-magic-hour: linear-gradient(to bottom, $color-light-purple, #fec7d2 90.26%);
+
+// Font Weights
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-bold-normal: 500;
+$font-weight-semibold: 600;
+$font-weight-superbold: 700;
+
+// Font Families
+// $font-family-graphik: 'Graphik';
+// $font-family-graphik-medium: 'Graphik Medium', sans-serif;
+// $font-family-wallop: 'WallopPRPL';
+
+// Z indexes
+$z-index-n-1: -1;
+$z-index-default: 0;
+$z-index-1: 1;
+$z-index-2: 2;
+$z-index-tooltips: 3;
+$z-index-screen-takeover-bg-overlay: 4;
+$z-index-screen-takeover: 5;
+$z-index-subnav: 6;
+$z-index-promo-modals: 7;
+$z-index-submenu: 8;
+$z-index-header-nav: 9;
+$z-index-header: 10;
+$z-index-overlay: 11;
+$z-index-cart: 12;
+$z-index-modals: 13;
+
+// Defaults
+$default-font-size: 16px;
+$default-font-color: $color-light-midnight;
+// $default-font-family: $font-family-graphik;
+$default-line-weight: $font-weight-light;
+$default-line-height: 1.4;
+$default-border-color: $color-purple-medium;
+
+// Grid
+$grid-breakpoints: (
+  xs: 0,
+  sm: 540px,
+  md: 768px,
+  lg: 1128px,
+  xl: 1600px
+);
+$container-max-widths: (
+  sm: 880px,
+  md: 1156px,
+  xl: 1520px
+);
+$lg-container-max-widths: (
+  md: 936px,
+  lg: 1392px
+);
+$container-paddings: (
+  xs: 16px,
+  md: 24px
+);
+$grid-gutter-widths: (
+  xs: 16px,
+  md: 24px
+);
+
+// Transition Time and Ease
+$time: .3s ease-in-out;
+$all: all $time;
