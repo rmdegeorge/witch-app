@@ -3,6 +3,7 @@ import { isNumber } from "../../../../utilities/utilities";
 
 export default function NumberInput(props) {
   const {
+    className,
     inputId,
     labelTxt,
     name,
@@ -10,6 +11,7 @@ export default function NumberInput(props) {
   } = props;
 
   const [value, setValue] = useState('');
+
   function onChangeHandler(e) {
     let valStr = e.target.value;
     if (isNumber(valStr)) {
@@ -19,9 +21,9 @@ export default function NumberInput(props) {
   }
 
   return (
-    <div>
-      <label htmlFor={inputId} >{labelTxt}</label>
-      <input type='text' id={inputId} name={name} placeholder={placeholder} value={value} onChange={onChangeHandler} />
+    <div className='form-group'>
+      <label htmlFor={inputId} className='control-label'>{labelTxt}</label>
+      <input type='text' id={inputId} className={`form-control ${className}`} name={name} placeholder={placeholder} value={value} onChange={onChangeHandler} />
     </div>
   );
 }

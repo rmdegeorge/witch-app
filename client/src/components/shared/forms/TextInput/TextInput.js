@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export default function TextInput(props) {
   const {
+    className,
     inputId,
     labelTxt,
     name,
@@ -16,9 +17,9 @@ export default function TextInput(props) {
   }
 
   return (
-    <div>
-      <label htmlFor={inputId} >{labelTxt}</label>
-      <input type='text' id={inputId} name={name} placeholder={placeholder} value={value} onChange={onChangeHandler} />
+    <div className='form-group'>
+      <label htmlFor={inputId} className='control-label'>{labelTxt}</label>
+      <input type='text' id={inputId} className={`form-control ${className}`} name={name} placeholder={placeholder} value={value} onChange={onChangeHandler} />
     </div>
   );
 }
